@@ -6,1536 +6,468 @@
 <meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
 <meta name="googlebot" content="noindex, nofollow">
 <meta name="bingbot" content="noindex, nofollow">
-<title>RoSA – Robot Safety Assist | Build Smarter, Deploy Faster</title>
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&family=Sora:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<title>RoSA – Robot Safety Assist | Prove your robot is safe in hours, not weeks</title>
 <style>
-:root {
-  --grad-start: #1a1040;
-  --grad-mid: #1e3a5f;
-  --grad-end: #0d4d4d;
-  --surface: rgba(255,255,255,0.04);
-  --surface-hover: rgba(255,255,255,0.07);
-  --glass: rgba(255,255,255,0.06);
-  --glass-border: rgba(255,255,255,0.1);
-  --magenta: #e930a8;
-  --magenta-glow: rgba(233, 48, 168, 0.2);
-  --teal: #3dd6c8;
-  --teal-glow: rgba(61, 214, 200, 0.15);
-  --cyan: #4ecadf;
-  --text: #f0f4f8;
-  --text-secondary: #a8b8cc;
-  --text-dim: #6b7d94;
-}
-
-* { margin: 0; padding: 0; box-sizing: border-box; }
-html { scroll-behavior: smooth; }
-
-body {
-  font-family: 'Outfit', sans-serif;
-  color: var(--text);
-  overflow-x: hidden;
-  -webkit-font-smoothing: antialiased;
-  background: var(--grad-start);
-}
-
-.page-bg {
-  position: fixed;
-  inset: 0;
-  background: linear-gradient(135deg, #2a1052 0%, #1a3060 30%, #0f4a52 60%, #1e2050 100%);
-  z-index: -2;
-}
-.page-bg::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background:
-    radial-gradient(ellipse 80% 60% at 20% 10%, rgba(233, 48, 168, 0.08) 0%, transparent 60%),
-    radial-gradient(ellipse 60% 50% at 80% 80%, rgba(61, 214, 200, 0.06) 0%, transparent 60%);
-}
-
-.container { max-width: 1180px; margin: 0 auto; padding: 0 2rem; }
-.mono { font-family: 'JetBrains Mono', monospace; }
-
-.badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 0.68rem;
-  font-weight: 600;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--magenta);
-  background: var(--magenta-glow);
-  border: 1px solid rgba(233, 48, 168, 0.25);
-  padding: 0.4rem 0.9rem;
-  border-radius: 100px;
-}
-.badge-teal {
-  color: var(--teal);
-  background: var(--teal-glow);
-  border-color: rgba(61, 214, 200, 0.25);
-}
-
-/* ─── Shield Logo ─── */
-.shield-logo {
-  width: 44px;
-  height: 44px;
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.shield-logo svg { width: 100%; height: 100%; }
-
-/* ─── Nav ─── */
-nav {
-  position: fixed;
-  top: 0;
-  width: 100%;
-  z-index: 100;
-  background: rgba(26, 16, 64, 0.7);
-  backdrop-filter: blur(24px);
-  border-bottom: 1px solid var(--glass-border);
-}
-nav .container {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  height: 70px;
-}
-.nav-brand {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  text-decoration: none;
-}
-.nav-wordmark {
-  font-family: 'Sora', sans-serif;
-  font-size: 1.2rem;
-  font-weight: 700;
-  letter-spacing: -0.01em;
-  color: var(--text);
-}
-.nav-wordmark .ro { color: var(--magenta); font-weight: 800; }
-.nav-wordmark .s { color: var(--teal); font-weight: 800; }
-.nav-wordmark .a { color: var(--teal); font-weight: 800; }
-.nav-wordmark .dim { color: var(--text-secondary); font-weight: 400; font-size: 0.95em; }
-.nav-links { display: flex; gap: 2rem; align-items: center; }
-.nav-links a {
-  color: var(--text-secondary);
-  text-decoration: none;
-  font-size: 0.85rem;
-  font-weight: 500;
-  transition: color 0.2s;
-}
-.nav-links a:hover { color: var(--text); }
-
-.btn-mag {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  background: linear-gradient(135deg, var(--magenta) 0%, #c020a0 100%);
-  color: #fff;
-  font-weight: 600;
-  font-size: 0.85rem;
-  padding: 0.65rem 1.5rem;
-  border-radius: 10px;
-  text-decoration: none;
-  border: none;
-  cursor: pointer;
-  transition: all 0.3s;
-  box-shadow: 0 4px 20px var(--magenta-glow);
-}
-.btn-mag:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(233, 48, 168, 0.35); }
-.btn-glass {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  background: var(--glass);
-  color: var(--text);
-  font-weight: 500;
-  font-size: 0.85rem;
-  padding: 0.65rem 1.5rem;
-  border-radius: 10px;
-  border: 1px solid var(--glass-border);
-  text-decoration: none;
-  cursor: pointer;
-  transition: all 0.25s;
-}
-.btn-glass:hover { background: var(--surface-hover); border-color: rgba(255,255,255,0.18); }
-
-/* ─── Hero ─── */
-.hero {
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
-  padding: 120px 0 80px;
-  position: relative;
-}
-.hero::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  right: -10%;
-  width: 600px;
-  height: 600px;
-  background: radial-gradient(circle, rgba(233, 48, 168, 0.1) 0%, transparent 60%);
-  animation: pulse-glow 6s ease-in-out infinite;
-}
-@keyframes pulse-glow {
-  0%, 100% { opacity: 0.6; transform: scale(1); }
-  50% { opacity: 1; transform: scale(1.1); }
-}
-.hero-inner {
-  display: grid;
-  grid-template-columns: 1.1fr 0.9fr;
-  gap: 4rem;
-  align-items: center;
-  position: relative;
-  z-index: 1;
-}
-.hero-text h1 {
-  font-size: clamp(2.6rem, 5vw, 3.8rem);
-  font-weight: 800;
-  line-height: 1.08;
-  letter-spacing: -0.03em;
-  margin-bottom: 1.5rem;
-}
-.hero-text h1 .highlight {
-  background: linear-gradient(135deg, var(--magenta) 0%, var(--teal) 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-.hero-text .subtitle {
-  font-size: 1.12rem;
-  color: var(--text-secondary);
-  line-height: 1.65;
-  max-width: 520px;
-  margin-bottom: 2rem;
-}
-.hero-text .tagline {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 0.78rem;
-  color: var(--teal);
-  letter-spacing: 0.06em;
-  margin-bottom: 2rem;
-  opacity: 0.8;
-}
-.hero-actions { display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 3rem; }
-
-.hero-proof {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 1.5rem;
-  padding-top: 2.5rem;
-  border-top: 1px solid var(--glass-border);
-}
-.proof-item .proof-num {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 1.6rem;
-  font-weight: 700;
-  background: linear-gradient(135deg, var(--magenta), var(--teal));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-.proof-item .proof-label {
-  font-size: 0.72rem;
-  color: var(--text-dim);
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  margin-top: 0.2rem;
-}
-
-/* Hero Visual — Chain diagram */
-.hero-visual {
-  position: relative;
-}
-.chain-diagram {
-  background: var(--glass);
-  border: 1px solid var(--glass-border);
-  border-radius: 20px;
-  padding: 2.5rem 2rem;
-  backdrop-filter: blur(10px);
-}
-.chain-title {
-  font-size: 0.95rem;
-  font-weight: 600;
-  text-align: center;
-  margin-bottom: 2rem;
-  line-height: 1.4;
-}
-.chain-links {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-.chain-link {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  padding: 0.9rem 1.2rem;
-  border-radius: 12px;
-  background: rgba(255,255,255,0.03);
-  border: 1px solid var(--glass-border);
-  transition: all 0.3s;
-}
-.chain-link:last-child {
-  background: linear-gradient(135deg, rgba(233, 48, 168, 0.12) 0%, rgba(61, 214, 200, 0.08) 100%);
-  border-color: var(--magenta);
-  box-shadow: 0 0 30px var(--magenta-glow);
-}
-.chain-link .link-icon { font-size: 1.3rem; flex-shrink: 0; }
-.chain-link .link-text { font-size: 0.82rem; font-weight: 500; }
-.chain-link .link-example {
-  font-size: 0.7rem;
-  color: var(--text-dim);
-  margin-left: auto;
-  font-family: 'JetBrains Mono', monospace;
-}
-.chain-link:last-child .link-text { color: var(--magenta); font-weight: 700; }
-
-/* ─── Problem ─── */
-.problem { padding: 7rem 0; }
-.section-header { text-align: center; margin-bottom: 4rem; }
-.section-header h2 {
-  font-size: 2.2rem;
-  font-weight: 800;
-  letter-spacing: -0.02em;
-  margin-top: 1rem;
-  line-height: 1.2;
-}
-.section-header p {
-  color: var(--text-secondary);
-  max-width: 580px;
-  margin: 1rem auto 0;
-  line-height: 1.6;
-}
-
-.stats-row {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 1.5rem;
-  margin-bottom: 3rem;
-}
-.stat-card {
-  background: var(--glass);
-  border: 1px solid var(--glass-border);
-  border-radius: 16px;
-  padding: 2rem 1.5rem;
-  text-align: center;
-  transition: all 0.3s;
-}
-.stat-card:hover { border-color: rgba(233, 48, 168, 0.3); transform: translateY(-4px); }
-.stat-card .stat-num {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 2.2rem;
-  font-weight: 700;
-  color: var(--magenta);
-  line-height: 1;
-}
-.stat-card .stat-label {
-  font-size: 0.82rem;
-  color: var(--text-secondary);
-  margin-top: 0.6rem;
-  line-height: 1.4;
-}
-.stat-card .stat-source {
-  font-size: 0.65rem;
-  color: var(--text-dim);
-  margin-top: 0.5rem;
-  font-style: italic;
-}
-
-.eu-regulation {
-  background: linear-gradient(135deg, rgba(233, 48, 168, 0.06) 0%, rgba(61, 214, 200, 0.06) 100%);
-  border: 1px solid var(--glass-border);
-  border-radius: 16px;
-  padding: 2rem 2.5rem;
-  display: flex;
-  align-items: center;
-  gap: 1.5rem;
-}
-.eu-regulation .eu-icon { font-size: 2.5rem; flex-shrink: 0; }
-.eu-regulation h3 { font-size: 1rem; font-weight: 700; margin-bottom: 0.3rem; }
-.eu-regulation p { font-size: 0.88rem; color: var(--text-secondary); line-height: 1.55; }
-
-/* ─── Solution / How it works ─── */
-.solution { padding: 7rem 0; }
-.steps-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 1.25rem;
-  margin-bottom: 4rem;
-}
-.step-card {
-  background: var(--glass);
-  border: 1px solid var(--glass-border);
-  border-radius: 16px;
-  padding: 2rem 1.5rem;
-  text-align: center;
-  position: relative;
-  transition: all 0.3s;
-}
-.step-card:hover { border-color: rgba(61, 214, 200, 0.3); transform: translateY(-4px); }
-.step-card .step-num {
-  position: absolute;
-  top: -12px;
-  left: 50%;
-  transform: translateX(-50%);
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 0.65rem;
-  font-weight: 700;
-  color: var(--teal);
-  background: rgba(61, 214, 200, 0.15);
-  border: 1px solid rgba(61, 214, 200, 0.3);
-  padding: 0.2rem 0.6rem;
-  border-radius: 100px;
-}
-.step-card .step-icon { font-size: 2rem; margin: 0.75rem 0; }
-.step-card h3 { font-size: 0.95rem; font-weight: 700; margin-bottom: 0.4rem; }
-.step-card p { font-size: 0.78rem; color: var(--text-dim); line-height: 1.5; }
-
-.outputs-row {
-  display: flex;
-  justify-content: center;
-  gap: 1.5rem;
-  flex-wrap: wrap;
-}
-.output-chip {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  background: var(--glass);
-  border: 1px solid var(--glass-border);
-  border-radius: 100px;
-  padding: 0.6rem 1.2rem;
-  font-size: 0.8rem;
-  font-weight: 500;
-}
-.output-chip .chip-icon { font-size: 1rem; }
-
-/* ─── Traction ─── */
-.traction { padding: 7rem 0; }
-.traction-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1.5rem;
-}
-.traction-card {
-  background: var(--glass);
-  border: 1px solid var(--glass-border);
-  border-radius: 16px;
-  padding: 2rem;
-  transition: border-color 0.3s;
-}
-.traction-card:hover { border-color: rgba(233, 48, 168, 0.25); }
-.traction-card h3 {
-  font-size: 1.05rem;
-  font-weight: 700;
-  margin-bottom: 1rem;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-.traction-card ul {
-  list-style: none;
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-.traction-card ul li {
-  font-size: 0.88rem;
-  color: var(--text-secondary);
-  padding-left: 1.4rem;
-  position: relative;
-  line-height: 1.5;
-}
-.traction-card ul li::before {
-  content: '→';
-  position: absolute;
-  left: 0;
-  color: var(--teal);
-  font-weight: 600;
-}
-.traction-card blockquote {
-  font-size: 0.95rem;
-  font-style: italic;
-  line-height: 1.6;
-  color: var(--text);
-  border-left: 3px solid var(--magenta);
-  padding-left: 1rem;
-  margin-bottom: 0.75rem;
-}
-.traction-card .attribution {
-  font-size: 0.78rem;
-  color: var(--text-dim);
-}
-
-/* ─── Market ─── */
-.market { padding: 7rem 0; }
-.market-visual {
-  background: var(--glass);
-  border: 1px solid var(--glass-border);
-  border-radius: 20px;
-  padding: 3rem;
-  margin-bottom: 3rem;
-}
-.market-bubbles {
-  display: flex;
-  align-items: flex-end;
-  justify-content: center;
-  gap: 2rem;
-  height: 280px;
-  position: relative;
-}
-.market-bubble {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  border-radius: 50%;
-  text-align: center;
-  transition: transform 0.3s;
-}
-.market-bubble:hover { transform: scale(1.05); }
-.market-bubble .bubble-value {
-  font-family: 'JetBrains Mono', monospace;
-  font-weight: 700;
-  line-height: 1;
-}
-.market-bubble .bubble-label {
-  font-size: 0.7rem;
-  color: rgba(255,255,255,0.7);
-  margin-top: 0.3rem;
-  line-height: 1.2;
-}
-.bubble-sm {
-  width: 110px;
-  height: 110px;
-  background: linear-gradient(135deg, rgba(233, 48, 168, 0.3), rgba(233, 48, 168, 0.15));
-  border: 1px solid rgba(233, 48, 168, 0.4);
-}
-.bubble-sm .bubble-value { font-size: 1rem; }
-.bubble-md {
-  width: 160px;
-  height: 160px;
-  background: linear-gradient(135deg, rgba(61, 214, 200, 0.2), rgba(61, 214, 200, 0.1));
-  border: 1px solid rgba(61, 214, 200, 0.35);
-}
-.bubble-md .bubble-value { font-size: 1.3rem; }
-.bubble-lg {
-  width: 220px;
-  height: 220px;
-  background: linear-gradient(135deg, rgba(233, 48, 168, 0.15), rgba(140, 50, 200, 0.15));
-  border: 1px solid rgba(233, 48, 168, 0.25);
-}
-.bubble-lg .bubble-value { font-size: 1.6rem; }
-.market-timeline {
-  display: flex;
-  justify-content: space-between;
-  margin-top: 1.5rem;
-  padding: 0 2rem;
-}
-.market-timeline span {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 0.75rem;
-  color: var(--text-dim);
-}
-.market-note {
-  text-align: center;
-  margin-top: 1.5rem;
-  font-size: 0.85rem;
-  color: var(--text-secondary);
-}
-
-/* ─── Competitive ─── */
-.competitive { padding: 4rem 0 7rem; }
-.comp-table-wrap {
-  background: var(--glass);
-  border: 1px solid var(--glass-border);
-  border-radius: 16px;
-  overflow: hidden;
-}
-.comp-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 0.82rem;
-}
-.comp-table th, .comp-table td {
-  padding: 0.9rem 1.2rem;
-  text-align: center;
-  border-bottom: 1px solid var(--glass-border);
-}
-.comp-table th {
-  background: rgba(255,255,255,0.03);
-  font-weight: 600;
-  font-size: 0.78rem;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  color: var(--text-secondary);
-}
-.comp-table th:first-child { text-align: left; }
-.comp-table td:first-child {
-  text-align: left;
-  font-weight: 500;
-  color: var(--text);
-}
-.comp-table td { color: var(--text-secondary); }
-.comp-table .rosa-col {
-  background: rgba(233, 48, 168, 0.06);
-  border-left: 2px solid var(--magenta);
-  border-right: 2px solid var(--magenta);
-}
-.comp-table th.rosa-col {
-  color: var(--magenta);
-  font-weight: 700;
-  background: rgba(233, 48, 168, 0.1);
-}
-.comp-table tr:last-child td { border-bottom: none; }
-.check { color: var(--teal); }
-.cross { color: #ff6b7a; }
-
-/* ─── Pricing ─── */
-.pricing { padding: 7rem 0; }
-.pricing-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 1.25rem;
-}
-.price-card {
-  background: var(--glass);
-  border: 1px solid var(--glass-border);
-  border-radius: 16px;
-  padding: 2rem 1.5rem;
-  display: flex;
-  flex-direction: column;
-  transition: all 0.3s;
-}
-.price-card:hover { border-color: rgba(61, 214, 200, 0.3); transform: translateY(-4px); }
-.price-card.pop {
-  border-color: var(--magenta);
-  background: linear-gradient(180deg, rgba(233, 48, 168, 0.08) 0%, var(--glass) 50%);
-  position: relative;
-}
-.price-card.pop::before {
-  content: 'MOST POPULAR';
-  position: absolute;
-  top: -11px;
-  left: 50%;
-  transform: translateX(-50%);
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 0.6rem;
-  letter-spacing: 0.1em;
-  color: #fff;
-  background: var(--magenta);
-  padding: 0.2rem 0.7rem;
-  border-radius: 100px;
-  font-weight: 700;
-}
-.price-card .tier-badge {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 0.65rem;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--text-dim);
-  margin-bottom: 0.75rem;
-}
-.price-card .tier-name {
-  font-size: 1.15rem;
-  font-weight: 700;
-  margin-bottom: 0.5rem;
-}
-.price-card .price {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 1.8rem;
-  font-weight: 700;
-  margin-bottom: 0.2rem;
-}
-.price-card .price-note {
-  font-size: 0.75rem;
-  color: var(--text-dim);
-  margin-bottom: 1.5rem;
-}
-.price-card .features {
-  list-style: none;
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-  margin-bottom: 1.5rem;
-}
-.price-card .features li {
-  font-size: 0.8rem;
-  color: var(--text-secondary);
-  display: flex;
-  align-items: flex-start;
-  gap: 0.5rem;
-}
-.price-card .features li::before {
-  content: '✓';
-  color: var(--teal);
-  font-weight: 700;
-  flex-shrink: 0;
-}
-
-/* ─── Roadmap ─── */
-.roadmap { padding: 7rem 0; }
-.roadmap-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 1.5rem;
-  position: relative;
-}
-.roadmap-grid::before {
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: 5%;
-  right: 5%;
-  height: 2px;
-  background: linear-gradient(90deg, var(--magenta), var(--teal));
-  opacity: 0.2;
-}
-.rm-card {
-  background: var(--glass);
-  border: 1px solid var(--glass-border);
-  border-radius: 16px;
-  padding: 2rem;
-  position: relative;
-  z-index: 1;
-  transition: all 0.3s;
-}
-.rm-card:hover { border-color: rgba(233, 48, 168, 0.3); }
-.rm-card .rm-phase {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 0.7rem;
-  font-weight: 700;
-  color: var(--teal);
-  background: var(--teal-glow);
-  border: 1px solid rgba(61, 214, 200, 0.25);
-  display: inline-block;
-  padding: 0.2rem 0.6rem;
-  border-radius: 6px;
-  margin-bottom: 0.75rem;
-}
-.rm-card h3 {
-  font-size: 1.1rem;
-  font-weight: 700;
-  margin-bottom: 1rem;
-}
-.rm-card .rm-items {
-  display: flex;
-  flex-direction: column;
-  gap: 0.6rem;
-}
-.rm-item {
-  font-size: 0.82rem;
-  color: var(--text-secondary);
-  line-height: 1.45;
-}
-.rm-item strong { color: var(--text); font-weight: 600; }
-
-/* ─── Team ─── */
-.team { padding: 7rem 0; }
-.team-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 1.25rem;
-  margin-bottom: 3rem;
-}
-.team-card {
-  background: var(--glass);
-  border: 1px solid var(--glass-border);
-  border-radius: 16px;
-  padding: 2rem 1.5rem;
-  text-align: center;
-  transition: all 0.3s;
-}
-.team-card:hover { border-color: rgba(61, 214, 200, 0.3); }
-.team-avatar {
-  width: 72px;
-  height: 72px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, rgba(233, 48, 168, 0.2), rgba(61, 214, 200, 0.2));
-  border: 2px solid var(--glass-border);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin: 0 auto 1rem;
-  font-size: 1.6rem;
-}
-.team-card h4 { font-size: 0.95rem; font-weight: 700; margin-bottom: 0.2rem; }
-.team-card .role {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 0.7rem;
-  color: var(--magenta);
-  font-weight: 600;
-  margin-bottom: 0.6rem;
-}
-.team-card p { font-size: 0.78rem; color: var(--text-dim); line-height: 1.45; }
-
-.mentors-label {
-  text-align: center;
-  font-size: 0.75rem;
-  font-weight: 600;
-  color: var(--text-dim);
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  margin-bottom: 1rem;
-}
-.mentors-row {
-  display: flex;
-  justify-content: center;
-  gap: 2rem;
-  flex-wrap: wrap;
-}
-.mentor-chip {
-  display: flex;
-  align-items: center;
-  gap: 0.6rem;
-  background: var(--glass);
-  border: 1px solid var(--glass-border);
-  border-radius: 100px;
-  padding: 0.5rem 1rem 0.5rem 0.5rem;
-}
-.mentor-chip .mentor-dot {
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, rgba(233, 48, 168, 0.15), rgba(61, 214, 200, 0.15));
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 0.75rem;
-}
-.mentor-chip .mentor-info .name { font-size: 0.78rem; font-weight: 600; }
-.mentor-chip .mentor-info .title { font-size: 0.65rem; color: var(--text-dim); }
-
-/* ─── Co-Founder CTA ─── */
-.cofounder-cta {
-  padding: 7rem 0;
-  position: relative;
-}
-.cofounder-box {
-  background: linear-gradient(135deg, rgba(233, 48, 168, 0.08) 0%, rgba(61, 214, 200, 0.06) 100%);
-  border: 1px solid rgba(233, 48, 168, 0.2);
-  border-radius: 24px;
-  padding: 4rem;
-  display: grid;
-  grid-template-columns: 1.2fr 0.8fr;
-  gap: 3rem;
-  align-items: center;
-  position: relative;
-  overflow: hidden;
-}
-.cofounder-box::before {
-  content: '';
-  position: absolute;
-  top: -100px;
-  right: -100px;
-  width: 400px;
-  height: 400px;
-  background: radial-gradient(circle, rgba(233, 48, 168, 0.1) 0%, transparent 60%);
-  pointer-events: none;
-}
-.cf-text h2 {
-  font-size: 2.2rem;
-  font-weight: 800;
-  letter-spacing: -0.02em;
-  margin-bottom: 1rem;
-  line-height: 1.15;
-}
-.cf-text > p {
-  color: var(--text-secondary);
-  line-height: 1.6;
-  margin-bottom: 2rem;
-  max-width: 480px;
-}
-.cf-roles {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-  margin-bottom: 2rem;
-}
-.cf-role {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  font-size: 0.9rem;
-}
-.cf-role .cf-icon {
-  width: 36px;
-  height: 36px;
-  border-radius: 10px;
-  background: var(--magenta-glow);
-  border: 1px solid rgba(233, 48, 168, 0.25);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1rem;
-  flex-shrink: 0;
-}
-.cf-role strong { color: var(--magenta); }
-
-.cf-details {
-  position: relative;
-  z-index: 1;
-}
-.cf-detail-card {
-  background: var(--glass);
-  border: 1px solid var(--glass-border);
-  border-radius: 16px;
-  padding: 2rem;
-}
-.cf-detail-card h4 {
-  font-size: 0.9rem;
-  font-weight: 700;
-  margin-bottom: 1rem;
-  color: var(--teal);
-}
-.cf-detail-card ul {
-  list-style: none;
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-.cf-detail-card ul li {
-  font-size: 0.82rem;
-  color: var(--text-secondary);
-  padding-left: 1.2rem;
-  position: relative;
-  line-height: 1.5;
-}
-.cf-detail-card ul li::before {
-  content: '✦';
-  position: absolute;
-  left: 0;
-  color: var(--magenta);
-}
-
-/* ─── Footer ─── */
-footer {
-  padding: 3rem 0;
-  border-top: 1px solid var(--glass-border);
-}
-footer .container {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 1rem;
-}
-.footer-brand {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 0.8rem;
-  color: var(--text-dim);
-}
-.footer-brand .ro { color: var(--magenta); }
-.footer-brand .sa { color: var(--teal); }
-.footer-links { display: flex; gap: 1.5rem; }
-.footer-links a {
-  color: var(--text-dim);
-  font-size: 0.78rem;
-  text-decoration: none;
-  transition: color 0.2s;
-}
-.footer-links a:hover { color: var(--text-secondary); }
-.footer-contact {
-  font-size: 0.78rem;
-  color: var(--text-dim);
-}
-
-/* ─── Video Embed ─── */
-.video-embed { max-width: 800px; margin: 0 auto; }
-.video-card {
-  display: block;
-  background: var(--glass);
-  border: 1px solid var(--glass-border);
-  border-radius: 20px;
-  overflow: hidden;
-  text-decoration: none;
-  color: var(--text);
-  transition: all 0.3s;
-}
-.video-card:hover {
-  border-color: rgba(233, 48, 168, 0.3);
-  transform: translateY(-4px);
-  box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-}
-.video-thumb {
-  position: relative;
-  width: 100%;
-  aspect-ratio: 16/9;
-  overflow: hidden;
-  background: var(--grad-start);
-}
-.video-thumb img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  opacity: 0.85;
-  transition: opacity 0.3s;
-}
-.video-card:hover .video-thumb img { opacity: 1; }
-.play-btn {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 72px;
-  height: 72px;
-  border-radius: 50%;
-  background: rgba(233, 48, 168, 0.9);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.5rem;
-  color: #fff;
-  box-shadow: 0 8px 30px rgba(233, 48, 168, 0.4);
-  transition: all 0.3s;
-}
-.video-card:hover .play-btn { transform: translate(-50%, -50%) scale(1.1); background: var(--magenta); }
-.video-info {
-  padding: 1.5rem 2rem 2rem;
-}
-.video-info h3 {
-  font-size: 1.1rem;
-  font-weight: 700;
-  margin-bottom: 0.5rem;
-}
-.video-info p {
-  font-size: 0.85rem;
-  color: var(--text-secondary);
-  line-height: 1.55;
-  margin-bottom: 0.75rem;
-}
-.watch-cta {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 0.78rem;
-  font-weight: 600;
-  color: var(--magenta);
-}
-
-/* ─── Animations ─── */
-@keyframes fadeUp {
-  from { opacity: 0; transform: translateY(24px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-.anim { opacity: 0; animation: fadeUp 0.6s ease forwards; }
-.d1 { animation-delay: 0.08s; }
-.d2 { animation-delay: 0.16s; }
-.d3 { animation-delay: 0.24s; }
-.d4 { animation-delay: 0.32s; }
-.d5 { animation-delay: 0.4s; }
-
-/* ─── Responsive ─── */
-@media (max-width: 1024px) {
-  .hero-inner { grid-template-columns: 1fr; }
-  .hero-visual { display: none; }
-  .stats-row { grid-template-columns: repeat(2, 1fr); }
-  .steps-grid { grid-template-columns: repeat(2, 1fr); }
-  .pricing-grid { grid-template-columns: repeat(2, 1fr); }
-  .roadmap-grid { grid-template-columns: 1fr; }
-  .roadmap-grid::before { display: none; }
-  .team-grid { grid-template-columns: repeat(2, 1fr); }
-  .cofounder-box { grid-template-columns: 1fr; }
-  .comp-table { font-size: 0.75rem; }
-}
-@media (max-width: 640px) {
-  .nav-links { display: none; }
-  .hero-proof { grid-template-columns: repeat(2, 1fr); }
-  .stats-row { grid-template-columns: 1fr; }
-  .steps-grid { grid-template-columns: 1fr; }
-  .pricing-grid { grid-template-columns: 1fr; }
-  .traction-grid { grid-template-columns: 1fr; }
-  .team-grid { grid-template-columns: 1fr; }
-  .market-bubbles { flex-direction: column; align-items: center; height: auto; }
-  .cofounder-box { padding: 2rem; }
-}
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { margin: 0; background: #FBF6F4; color: #1C1418; font-family: Arial, Helvetica, sans-serif; }
+  ::selection { background: rgba(200,30,90,0.18); }
+  details > summary { list-style: none; cursor: pointer; }
+  details > summary::-webkit-details-marker { display: none; }
+  @keyframes logoScroll { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+  @keyframes capIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+  .logo-track:hover { animation-play-state: paused; }
 </style>
 </head>
 <body>
+<div style="position:relative;background:#FBF6F4;color:#1C1418;font-family:Arial,Helvetica,sans-serif;">
 
-<div class="page-bg"></div>
-
-<!-- ═══════ NAV ═══════ -->
-<nav>
-  <div class="container">
-    <a href="#" class="nav-brand">
-      <img src="data:image/png;base64,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" alt="RoSA" style="height: 38px; width: auto;">
-      <span class="nav-wordmark"><span class="ro">RO</span><span class="dim">BO</span> <span class="s">S</span><span class="dim">AFETY</span> <span class="a">A</span><span class="dim">SSIST</span></span>
-    </a>
-    <div class="nav-links">
-      <a href="#problem">Problem</a>
-      <a href="#solution">Solution</a>
-      <a href="#market">Market</a>
-      <a href="#demo">Demo</a>
-      <a href="#cofounder" class="btn-mag">Join as Co-Founder →</a>
+  <!-- NAV -->
+  <div style="position:sticky;top:0;z-index:10;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:14px 5vw;background:rgba(251,246,244,0.85);backdrop-filter:blur(10px);border-bottom:1px solid rgba(30,16,20,0.10);">
+    <div style="font-family:'Courier New',monospace;font-size:14px;font-weight:700;letter-spacing:0.13em;">ROSA<span style="color:#C81E5A;">.</span> <span style="color:#7E6E73;font-weight:400;">ROBOT SAFETY ASSIST</span></div>
+    <div style="display:flex;align-items:center;gap:22px;">
+      <a href="#how" style="font-size:14px;color:#6E5F63;text-decoration:none;">How it works</a>
+      <a href="#product" style="font-size:14px;color:#6E5F63;text-decoration:none;">Product</a>
+      <a href="#faq" style="font-size:14px;color:#6E5F63;text-decoration:none;">FAQ</a>
+      <a href="#early-access" style="font-family:'Courier New',monospace;font-size:12px;letter-spacing:0.08em;color:#fff;text-decoration:none;padding:10px 18px;border-radius:999px;background:#C81E5A;font-weight:700;">GET EARLY ACCESS</a>
     </div>
   </div>
-</nav>
 
-<!-- ═══════ HERO ═══════ -->
-<section class="hero">
-  <div class="container">
-    <div class="hero-inner">
-      <div class="hero-text">
-        <span class="badge anim">Patented Technology · 50+ Beta Testers</span>
-        <div class="tagline anim d1">Build Smarter, Deploy Faster</div>
-        <h1 class="anim d2">
-          Safety validation<br>
-          <span class="highlight">for every robot.</span>
-        </h1>
-        <p class="subtitle anim d3">
-          RoSA automates CE-compliant safety validation for stationary, mobile, and humanoid robots — reducing weeks of manual work to minutes. The safety infrastructure for the robotics era.
-        </p>
-        <div class="hero-actions anim d4">
-          <a href="#cofounder" class="btn-mag">Join as Co-Founder →</a>
-          <a href="#solution" class="btn-glass">See How It Works</a>
+  <!-- HERO -->
+  <section style="max-width:1180px;margin:0 auto;padding:72px 5vw 56px;display:grid;grid-template-columns:1.05fr 0.95fr;gap:56px;align-items:center;">
+    <div data-reveal>
+      <div style="display:inline-flex;align-items:center;gap:8px;font-family:'Courier New',monospace;font-size:12px;letter-spacing:0.14em;color:#C81E5A;border:1px solid rgba(200,30,90,0.3);border-radius:999px;padding:7px 14px;">
+        <span style="width:7px;height:7px;border-radius:50%;background:#C81E5A;"></span> BETA LIVE · NOW ONBOARDING EARLY-ACCESS TEAMS
+      </div>
+      <h1 style="margin:22px 0 20px;font-size:clamp(38px,4.6vw,62px);font-weight:700;line-height:1.06;letter-spacing:-0.02em;">Prove your robot is safe in hours, not weeks</h1>
+      <p style="margin:0;max-width:520px;font-size:19px;line-height:1.55;color:#6E5F63;">RoSA-Designer automates safety validation for industrial robots and cobots: from hazard identification to CE safety documentation. No consultants, no blank-sheet risk assessments.</p>
+      <div style="margin-top:30px;display:flex;gap:12px;flex-wrap:wrap;">
+        <a href="#early-access" style="font-family:'Courier New',monospace;font-size:13px;letter-spacing:0.08em;color:#fff;text-decoration:none;padding:15px 26px;border-radius:999px;background:#C81E5A;font-weight:700;">GET EARLY ACCESS</a>
+        <a href="#how" style="font-family:'Courier New',monospace;font-size:13px;letter-spacing:0.08em;color:#1C1418;text-decoration:none;padding:15px 26px;border-radius:999px;border:1px solid rgba(30,16,20,0.25);">SEE HOW IT WORKS</a>
+      </div>
+    </div>
+    <div data-reveal style="position:relative;">
+      <div style="background:#fff;border-radius:12px;box-shadow:0 2px 6px rgba(30,16,20,0.06),0 18px 50px rgba(30,16,20,0.10);overflow:hidden;">
+        <div style="display:flex;align-items:center;gap:8px;padding:11px 14px;border-bottom:1px solid rgba(30,16,20,0.08);background:#F7F3F4;">
+          <span style="width:11px;height:11px;border-radius:50%;background:#E05A6E;flex:none;"></span>
+          <span style="width:11px;height:11px;border-radius:50%;background:#E9C46A;flex:none;"></span>
+          <span style="width:11px;height:11px;border-radius:50%;background:#8BC48A;flex:none;"></span>
+          <span style="margin-left:10px;font-family:'Courier New',monospace;font-size:11px;letter-spacing:0.08em;color:#7E6E73;">RoSA-Designer</span>
         </div>
-        <div class="hero-proof anim d5">
-          <div class="proof-item">
-            <div class="proof-num mono">10×</div>
-            <div class="proof-label">Faster validation</div>
+        <img src="media/hero-rosa-designer.png" alt="RoSA-Designer screenshot" style="display:block;width:100%;height:auto;object-fit:contain;">
+      </div>
+      <div style="margin-top:12px;display:flex;align-items:center;gap:8px;font-family:'Courier New',monospace;font-size:11.5px;letter-spacing:0.07em;color:#7E6E73;">
+        <span style="width:7px;height:7px;border-radius:50%;background:#C81E5A;flex:none;"></span> LIVE FORCE &amp; PRESSURE ANALYSIS · DEMO MODE
+      </div>
+    </div>
+  </section>
+
+  <!-- LOGO STRIP -->
+  <section style="max-width:1180px;margin:0 auto;padding:8px 5vw 40px;">
+    <div style="font-family:'Courier New',monospace;font-size:12px;letter-spacing:0.16em;color:#7E6E73;text-align:center;">IN EVALUATION WITH TEAMS AT</div>
+    <div style="margin-top:20px;overflow:hidden;-webkit-mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent);mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent);">
+      <div class="logo-track" style="display:flex;align-items:center;gap:48px;width:max-content;animation:logoScroll 34s linear infinite;">
+        <img src="media/image14.png" alt="Beta tester logo" style="height:34px;object-fit:contain;filter:grayscale(1);opacity:0.55;flex:none;">
+        <img src="media/image11.png" alt="Beta tester logo" style="height:34px;object-fit:contain;filter:grayscale(1);opacity:0.55;flex:none;">
+        <img src="media/image12.jpeg" alt="Beta tester logo" style="height:34px;object-fit:contain;filter:grayscale(1);opacity:0.55;flex:none;">
+        <img src="media/image22.png" alt="Beta tester logo" style="height:34px;object-fit:contain;filter:grayscale(1);opacity:0.55;flex:none;">
+        <img src="media/image16.png" alt="Beta tester logo" style="height:34px;object-fit:contain;filter:grayscale(1);opacity:0.55;flex:none;">
+        <img src="media/image10.png" alt="Beta tester logo" style="height:34px;object-fit:contain;filter:grayscale(1);opacity:0.55;flex:none;">
+        <img src="media/image9.png" alt="Beta tester logo" style="height:34px;object-fit:contain;filter:grayscale(1);opacity:0.55;flex:none;">
+        <img src="media/image23.png" alt="Beta tester logo" style="height:34px;object-fit:contain;filter:grayscale(1);opacity:0.55;flex:none;">
+        <img src="media/image20.png" alt="Beta tester logo" style="height:34px;object-fit:contain;filter:grayscale(1);opacity:0.55;flex:none;">
+        <img src="media/image21_frame.png" alt="Beta tester logo" style="height:34px;object-fit:contain;filter:grayscale(1);opacity:0.55;flex:none;">
+        <img src="media/image15.png" alt="Beta tester logo" style="height:34px;object-fit:contain;filter:grayscale(1);opacity:0.55;flex:none;">
+        <img src="media/image19.png" alt="Beta tester logo" style="height:34px;object-fit:contain;filter:grayscale(1);opacity:0.55;flex:none;">
+        <img src="media/image18.png" alt="Beta tester logo" style="height:34px;object-fit:contain;filter:grayscale(1);opacity:0.55;flex:none;">
+        <img src="media/image17.png" alt="Beta tester logo" style="height:34px;object-fit:contain;filter:grayscale(1);opacity:0.55;flex:none;">
+        <img src="media/image13.png" alt="Beta tester logo" style="height:34px;object-fit:contain;filter:grayscale(1);opacity:0.55;flex:none;">
+        <img src="media/image14.png" alt="Beta tester logo" style="height:34px;object-fit:contain;filter:grayscale(1);opacity:0.55;flex:none;">
+        <img src="media/image11.png" alt="Beta tester logo" style="height:34px;object-fit:contain;filter:grayscale(1);opacity:0.55;flex:none;">
+        <img src="media/image12.jpeg" alt="Beta tester logo" style="height:34px;object-fit:contain;filter:grayscale(1);opacity:0.55;flex:none;">
+        <img src="media/image22.png" alt="Beta tester logo" style="height:34px;object-fit:contain;filter:grayscale(1);opacity:0.55;flex:none;">
+        <img src="media/image16.png" alt="Beta tester logo" style="height:34px;object-fit:contain;filter:grayscale(1);opacity:0.55;flex:none;">
+        <img src="media/image10.png" alt="Beta tester logo" style="height:34px;object-fit:contain;filter:grayscale(1);opacity:0.55;flex:none;">
+        <img src="media/image9.png" alt="Beta tester logo" style="height:34px;object-fit:contain;filter:grayscale(1);opacity:0.55;flex:none;">
+        <img src="media/image23.png" alt="Beta tester logo" style="height:34px;object-fit:contain;filter:grayscale(1);opacity:0.55;flex:none;">
+        <img src="media/image20.png" alt="Beta tester logo" style="height:34px;object-fit:contain;filter:grayscale(1);opacity:0.55;flex:none;">
+        <img src="media/image21_frame.png" alt="Beta tester logo" style="height:34px;object-fit:contain;filter:grayscale(1);opacity:0.55;flex:none;">
+        <img src="media/image15.png" alt="Beta tester logo" style="height:34px;object-fit:contain;filter:grayscale(1);opacity:0.55;flex:none;">
+        <img src="media/image19.png" alt="Beta tester logo" style="height:34px;object-fit:contain;filter:grayscale(1);opacity:0.55;flex:none;">
+        <img src="media/image18.png" alt="Beta tester logo" style="height:34px;object-fit:contain;filter:grayscale(1);opacity:0.55;flex:none;">
+        <img src="media/image17.png" alt="Beta tester logo" style="height:34px;object-fit:contain;filter:grayscale(1);opacity:0.55;flex:none;">
+        <img src="media/image13.png" alt="Beta tester logo" style="height:34px;object-fit:contain;filter:grayscale(1);opacity:0.55;flex:none;">
+      </div>
+    </div>
+  </section>
+
+  <!-- VALUE -->
+  <section style="max-width:1180px;margin:0 auto;padding:48px 5vw;">
+    <div data-reveal style="display:grid;grid-template-columns:repeat(3,1fr);gap:22px;">
+      <div style="background:#fff;border-radius:16px;padding:28px;box-shadow:0 1px 3px rgba(30,16,20,0.04),0 8px 28px rgba(30,16,20,0.05);">
+        <div style="font-size:40px;font-weight:700;color:#C81E5A;line-height:1;">Weeks <span style="font-size:24px;color:#7E6E73;">→</span> hours</div>
+        <div style="margin-top:12px;font-size:16px;line-height:1.5;color:#6E5F63;">Validation time per robot cell. Re-run it in minutes after every configuration change.</div>
+      </div>
+      <div style="background:#fff;border-radius:16px;padding:28px;box-shadow:0 1px 3px rgba(30,16,20,0.04),0 8px 28px rgba(30,16,20,0.05);">
+        <div style="font-size:40px;font-weight:700;color:#C81E5A;line-height:1;">Est. €15k</div>
+        <div style="margin-top:12px;font-size:16px;line-height:1.5;color:#6E5F63;">Consultant fees saved per cell. Safety expertise built into the software, not billed by the day.</div>
+      </div>
+      <div style="background:#fff;border-radius:16px;padding:28px;box-shadow:0 1px 3px rgba(30,16,20,0.04),0 8px 28px rgba(30,16,20,0.05);">
+        <div style="font-size:40px;font-weight:700;color:#C81E5A;line-height:1;">CE safety docs</div>
+        <div style="margin-top:12px;font-size:16px;line-height:1.5;color:#6E5F63;">ISO 13849 &amp; ISO 10218 aligned. Export the safety dossier for CE marking, plus OSHA, UKCA and more.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- HOW IT WORKS -->
+  <section id="how" style="max-width:1180px;margin:0 auto;padding:64px 5vw;">
+    <div data-reveal>
+      <div style="font-family:'Courier New',monospace;font-size:13px;letter-spacing:0.18em;color:#C81E5A;">HOW IT WORKS</div>
+      <h2 style="margin:14px 0 0;font-size:clamp(32px,3.6vw,48px);font-weight:700;line-height:1.08;letter-spacing:-0.015em;max-width:720px;">Four guided steps, from robot program to provable safety</h2>
+    </div>
+    <div style="margin-top:40px;display:grid;grid-template-columns:0.9fr 1.1fr;gap:36px;align-items:start;">
+      <div id="step-list" style="display:flex;flex-direction:column;gap:12px;">
+        <div class="step-card" data-step="0" style="padding:18px 20px;border-radius:14px;cursor:pointer;border:1.5px solid rgba(200,30,90,0.55);background:rgba(200,30,90,0.05);box-shadow:0 8px 24px rgba(200,30,90,0.08);transition:border-color .3s, background .3s, box-shadow .3s;">
+          <div style="display:flex;align-items:baseline;gap:12px;">
+            <span class="step-num" style="font-family:'Courier New',monospace;font-size:13px;font-weight:700;letter-spacing:0.08em;color:#C81E5A;">01</span>
+            <span style="font-size:19px;font-weight:700;">Auto-identify hazards</span>
           </div>
-          <div class="proof-item">
-            <div class="proof-num mono">50+</div>
-            <div class="proof-label">Beta testers</div>
+          <div style="margin:8px 0 0 34px;font-size:15px;line-height:1.5;color:#6E5F63;">Import your robot application. RoSA scans it and finds collision, clamping and pinch-point hazards automatically.</div>
+          <div style="margin:10px 0 0 34px;font-family:'Courier New',monospace;font-size:11px;letter-spacing:0.08em;color:#C81E5A;">→ COMPLETE HAZARD LIST</div>
+        </div>
+        <div class="step-card" data-step="1" style="padding:18px 20px;border-radius:14px;cursor:pointer;border:1px solid rgba(30,16,20,0.12);background:#fff;box-shadow:none;transition:border-color .3s, background .3s, box-shadow .3s;">
+          <div style="display:flex;align-items:baseline;gap:12px;">
+            <span class="step-num" style="font-family:'Courier New',monospace;font-size:13px;font-weight:700;letter-spacing:0.08em;color:#7E6E73;">02</span>
+            <span style="font-size:19px;font-weight:700;">Guided risk assessment</span>
           </div>
-          <div class="proof-item">
-            <div class="proof-num mono">TRL 7</div>
-            <div class="proof-label">Readiness level</div>
+          <div style="margin:8px 0 0 34px;font-size:15px;line-height:1.5;color:#6E5F63;">Every hazard is assessed with ISO-aligned severity and exposure ratings: guided, never from a blank sheet.</div>
+          <div style="margin:10px 0 0 34px;font-family:'Courier New',monospace;font-size:11px;letter-spacing:0.08em;color:#C81E5A;">→ RISK MATRIX</div>
+        </div>
+        <div class="step-card" data-step="2" style="padding:18px 20px;border-radius:14px;cursor:pointer;border:1px solid rgba(30,16,20,0.12);background:#fff;box-shadow:none;transition:border-color .3s, background .3s, box-shadow .3s;">
+          <div style="display:flex;align-items:baseline;gap:12px;">
+            <span class="step-num" style="font-family:'Courier New',monospace;font-size:13px;font-weight:700;letter-spacing:0.08em;color:#7E6E73;">03</span>
+            <span style="font-size:19px;font-weight:700;">Guided risk reduction</span>
           </div>
-          <div class="proof-item">
-            <div class="proof-num mono">7+</div>
-            <div class="proof-label">ISO standards</div>
+          <div style="margin:8px 0 0 34px;font-size:15px;line-height:1.5;color:#6E5F63;">RoSA estimates forces &amp; pressures and proposes constraints at the highest safe speed: safety without losing cycle time.</div>
+          <div style="margin:10px 0 0 34px;font-family:'Courier New',monospace;font-size:11px;letter-spacing:0.08em;color:#C81E5A;">→ FORCE &amp; PRESSURE ESTIMATION · SAFETY PLC SPEC</div>
+        </div>
+        <div class="step-card" data-step="3" style="padding:18px 20px;border-radius:14px;cursor:pointer;border:1px solid rgba(30,16,20,0.12);background:#fff;box-shadow:none;transition:border-color .3s, background .3s, box-shadow .3s;">
+          <div style="display:flex;align-items:baseline;gap:12px;">
+            <span class="step-num" style="font-family:'Courier New',monospace;font-size:13px;font-weight:700;letter-spacing:0.08em;color:#7E6E73;">04</span>
+            <span style="font-size:19px;font-weight:700;">Guided deployment</span>
           </div>
+          <div style="margin:8px 0 0 34px;font-size:15px;line-height:1.5;color:#6E5F63;">Export the validated robot program and the safety dossier, ready for sign-off and CE marking.</div>
+          <div style="margin:10px 0 0 34px;font-family:'Courier New',monospace;font-size:11px;letter-spacing:0.08em;color:#C81E5A;">→ VALIDATED PROGRAM · CE DOCUMENTATION</div>
         </div>
       </div>
-      <div class="hero-visual anim d3">
-        <div class="chain-diagram">
-          <div class="chain-title">Safety is the last missing piece<br>for mass adoption of robots</div>
-          <div class="chain-links">
-            <div class="chain-link">
-              <span class="link-icon">🔧</span>
-              <span class="link-text">Self-Service Machine Design</span>
-              <span class="link-example">Vention</span>
+      <div style="position:sticky;top:96px;">
+        <div style="background:#1C1418;border-radius:16px;box-shadow:0 2px 6px rgba(30,16,20,0.08),0 16px 44px rgba(30,16,20,0.16);padding:10px;">
+          <div style="position:relative;overflow:hidden;border-radius:10px;background:#141013;aspect-ratio:1060 / 640;">
+            <video id="demo-video" src="media/cara_low_quality-1.mp4" muted playsinline preload="auto" style="position:absolute;display:block;width:132%;max-width:none;left:-22.5%;top:-13.5%;"></video>
+            <div style="position:absolute;inset:0;pointer-events:none;background:linear-gradient(180deg,rgba(20,12,16,0.22) 0%,rgba(20,12,16,0) 18%,rgba(20,12,16,0) 40%,rgba(20,12,16,0.82) 82%,rgba(20,12,16,0.92) 100%);"></div>
+            <div style="position:absolute;top:12px;left:14px;font-family:'Courier New',monospace;font-size:10px;letter-spacing:0.12em;color:rgba(255,255,255,0.9);background:rgba(20,12,16,0.55);border:1px solid rgba(255,255,255,0.18);border-radius:999px;padding:5px 11px;">REAL FOOTAGE · ROSA-DESIGNER BETA</div>
+            <div style="position:absolute;left:16px;right:16px;bottom:13px;display:flex;flex-direction:column;gap:9px;">
+              <div id="caption-box" style="animation:capIn .55s cubic-bezier(.2,.7,.2,1) both;">
+                <div id="caption-tag" style="font-family:'Courier New',monospace;font-size:10.5px;letter-spacing:0.16em;color:#FF7BAA;text-shadow:0 1px 6px rgba(0,0,0,0.55);">01 · HAZARD IDENTIFICATION</div>
+                <div id="caption-text" style="margin-top:4px;font-size:clamp(16px,1.6vw,21px);font-weight:700;color:#fff;line-height:1.2;text-shadow:0 1px 8px rgba(0,0,0,0.35);">Every hazard, found automatically</div>
+              </div>
+              <div id="seg-bars" style="display:flex;gap:5px;">
+                <div class="seg-bar" data-step="0" style="flex:1;height:4px;border-radius:999px;background:rgba(255,255,255,0.28);overflow:hidden;cursor:pointer;"><div class="seg-fill" style="height:100%;width:0%;border-radius:999px;background:#FF7BAA;"></div></div>
+                <div class="seg-bar" data-step="1" style="flex:1;height:4px;border-radius:999px;background:rgba(255,255,255,0.28);overflow:hidden;cursor:pointer;"><div class="seg-fill" style="height:100%;width:0%;border-radius:999px;background:#FF7BAA;"></div></div>
+                <div class="seg-bar" data-step="2" style="flex:1;height:4px;border-radius:999px;background:rgba(255,255,255,0.28);overflow:hidden;cursor:pointer;"><div class="seg-fill" style="height:100%;width:0%;border-radius:999px;background:#FF7BAA;"></div></div>
+                <div class="seg-bar" data-step="3" style="flex:1;height:4px;border-radius:999px;background:rgba(255,255,255,0.28);overflow:hidden;cursor:pointer;"><div class="seg-fill" style="height:100%;width:0%;border-radius:999px;background:#FF7BAA;"></div></div>
+              </div>
             </div>
-            <div class="chain-link">
-              <span class="link-icon">💻</span>
-              <span class="link-text">Low-Code Robot Programming</span>
-              <span class="link-example">UR, Intrinsic</span>
-            </div>
-            <div class="chain-link">
-              <span class="link-icon">⚙️</span>
-              <span class="link-text">Affordable & Flexible Hardware</span>
-              <span class="link-example">RBTX</span>
-            </div>
-            <div class="chain-link">
-              <span class="link-icon">🛡</span>
-              <span class="link-text">Safety Validation & CE Conformity</span>
-              <span class="link-example">RoSA</span>
-            </div>
           </div>
         </div>
+        <div style="margin-top:14px;font-family:'Courier New',monospace;font-size:11.5px;letter-spacing:0.06em;color:#7E6E73;text-align:center;">A QUALIFIED PERSON STILL SIGNS OFF · ROSA PREPARES EVERYTHING THEY NEED.</div>
       </div>
     </div>
-  </div>
-</section>
+  </section>
 
-<!-- ═══════ PROBLEM ═══════ -->
-<section class="problem" id="problem">
-  <div class="container">
-    <div class="section-header">
-      <span class="badge">The Problem</span>
-      <h2>Robot safety is the #1 deployment bottleneck</h2>
-      <p>Every robot application requires safety validation and CE conformity by law before deployment. Today, this process is manual, slow, and expensive.</p>
+  <!-- TESTIMONIAL -->
+  <section style="background:#1C1418;color:#FBF6F4;">
+    <div data-reveal style="max-width:900px;margin:0 auto;padding:80px 5vw;text-align:center;">
+      <div style="font-family:'Courier New',monospace;font-size:12px;letter-spacing:0.18em;color:#FF7BAA;">FROM THE FIELD</div>
+      <div style="margin-top:22px;font-size:clamp(24px,2.8vw,36px);font-weight:700;line-height:1.3;">"Using RoSA Designer reduced the engineering effort for risk assessment by more than 54%."</div>
+      <div style="margin-top:20px;font-family:'Courier New',monospace;font-size:13px;letter-spacing:0.08em;color:#B9A9AF;">PRODUCTION ENGINEER · DENSO JAPAN</div>
     </div>
+  </section>
 
-    <div class="stats-row">
-      <div class="stat-card">
-        <div class="stat-num">#1</div>
-        <div class="stat-label">Safety is the top concern for deploying robotic technologies</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-num">79%</div>
-        <div class="stat-label">of industrial experts lack adequate safety tools</div>
-        <div class="stat-source">RoSA Market Study, Q3/2025 (n=203)</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-num">87%</div>
-        <div class="stat-label">unsure how to safely deploy humanoids</div>
-        <div class="stat-source">RoSA Market Study, Q3/2025</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-num">15–20%</div>
-        <div class="stat-label">of engineering costs go to safety compliance</div>
-        <div class="stat-source">SME to large enterprise range</div>
-      </div>
+  <!-- PRODUCT & ROADMAP -->
+  <section id="product" style="max-width:1180px;margin:0 auto;padding:72px 5vw;">
+    <div data-reveal>
+      <div style="font-family:'Courier New',monospace;font-size:13px;letter-spacing:0.18em;color:#C81E5A;">PRODUCT</div>
+      <h2 style="margin:14px 0 0;font-size:clamp(32px,3.6vw,48px);font-weight:700;line-height:1.08;letter-spacing:-0.015em;">One safety layer, growing with your robots</h2>
     </div>
-
-    <div class="eu-regulation">
-      <div class="eu-icon">🇪🇺</div>
-      <div>
-        <h3>EU Machinery Regulation 2023/1230</h3>
-        <p>Mandatory CE safety validation for every robot application in Europe — a non-discretionary compliance requirement. No validation = no deployment. This creates predictable, recurring demand analogous to tax software.</p>
+    <div data-reveal style="margin-top:36px;display:grid;grid-template-columns:repeat(3,1fr);gap:22px;">
+      <div style="background:#fff;border:1px solid rgba(200,30,90,0.35);border-radius:16px;padding:28px;box-shadow:0 8px 28px rgba(200,30,90,0.06);">
+        <div style="display:inline-block;font-family:'Courier New',monospace;font-size:10.5px;letter-spacing:0.1em;color:#fff;background:#C81E5A;border-radius:999px;padding:5px 12px;">IN BETA NOW</div>
+        <div style="margin-top:16px;font-size:22px;font-weight:700;">RoSA-Designer</div>
+        <div style="margin-top:10px;font-size:15px;line-height:1.55;color:#6E5F63;">Web-based safety software for stationary industrial robots and cobots. The four guided steps, force &amp; pressure estimation, safety PLC specification and CE dossier export.</div>
+      </div>
+      <div style="background:#fff;border-radius:16px;padding:28px;box-shadow:0 1px 3px rgba(30,16,20,0.04),0 8px 28px rgba(30,16,20,0.05);">
+        <div style="display:inline-block;font-family:'Courier New',monospace;font-size:10.5px;letter-spacing:0.1em;color:#B8620E;background:rgba(184,98,14,0.10);border:1px solid rgba(184,98,14,0.3);border-radius:999px;padding:5px 12px;">2026 · IN DEVELOPMENT</div>
+        <div style="margin-top:16px;font-size:22px;font-weight:700;">Humanoid &amp; Mobile Plugin</div>
+        <div style="margin-top:10px;font-size:15px;line-height:1.55;color:#6E5F63;">Extends the risk algorithms to humanoids and mobile robots, the same guided workflow for the next generation of your fleet.</div>
+      </div>
+      <div style="background:#fff;border-radius:16px;padding:28px;box-shadow:0 1px 3px rgba(30,16,20,0.04),0 8px 28px rgba(30,16,20,0.05);">
+        <div style="display:inline-block;font-family:'Courier New',monospace;font-size:10.5px;letter-spacing:0.1em;color:#7E6E73;background:rgba(30,16,20,0.05);border:1px solid rgba(30,16,20,0.14);border-radius:999px;padding:5px 12px;">ROADMAP</div>
+        <div style="margin-top:16px;font-size:22px;font-weight:700;">Realtime RoSA-Validator</div>
+        <div style="margin-top:10px;font-size:15px;line-height:1.55;color:#6E5F63;">Continuous safety monitoring on the robot controller: real-time program validation, generated safety parameterization, optimized speed within safe limits.</div>
       </div>
     </div>
-  </div>
-</section>
+  </section>
 
-<!-- ═══════ SOLUTION ═══════ -->
-<section class="solution" id="solution">
-  <div class="container">
-    <div class="section-header">
-      <span class="badge badge-teal">The Solution</span>
-      <h2>4 steps to safe robot deployment</h2>
-      <p>RoSA automates the complete safety lifecycle — not just the robot, but the entire application including end-effectors, handled parts, and task execution.</p>
+  <!-- WHO IT'S FOR -->
+  <section style="max-width:1180px;margin:0 auto;padding:8px 5vw 72px;">
+    <div data-reveal>
+      <div style="font-family:'Courier New',monospace;font-size:13px;letter-spacing:0.18em;color:#C81E5A;">WHO IT'S FOR</div>
+      <h2 style="margin:14px 0 0;font-size:clamp(28px,3vw,40px);font-weight:700;line-height:1.1;letter-spacing:-0.015em;">Built for the teams deploying robots near people</h2>
     </div>
-
-    <div class="steps-grid">
-      <div class="step-card">
-        <span class="step-num">01</span>
-        <div class="step-icon">🔍</div>
-        <h3>Auto-Identify Hazards</h3>
-        <p>AI-powered hazard identification across the complete robot application</p>
+    <div data-reveal style="margin-top:32px;display:grid;grid-template-columns:repeat(3,1fr);gap:22px;">
+      <div style="border:1px solid rgba(30,16,20,0.12);border-radius:16px;padding:26px;">
+        <div style="font-size:19px;font-weight:700;">Robotics startups &amp; labs</div>
+        <div style="margin-top:8px;font-family:'Courier New',monospace;font-size:11.5px;letter-spacing:0.06em;color:#7E6E73;">3–8 ROBOTS · R&amp;D AND PROTOTYPING</div>
+        <div style="margin-top:12px;font-size:15px;line-height:1.5;color:#6E5F63;">Ship demos and pilots without a safety department. Validate every iteration of your cell in hours.</div>
       </div>
-      <div class="step-card">
-        <span class="step-num">02</span>
-        <div class="step-icon">📊</div>
-        <h3>Guided Risk Assessment</h3>
-        <p>Structured risk evaluation with ISO-compliant scoring matrices</p>
+      <div style="border:1px solid rgba(30,16,20,0.12);border-radius:16px;padding:26px;">
+        <div style="font-size:19px;font-weight:700;">Manufacturers &amp; integrators</div>
+        <div style="margin-top:8px;font-family:'Courier New',monospace;font-size:11.5px;letter-spacing:0.06em;color:#7E6E73;">15–50 ROBOTS · PRODUCTION &amp; LOGISTICS</div>
+        <div style="margin-top:12px;font-size:15px;line-height:1.5;color:#6E5F63;">Stop losing weeks per deployment. Standardize safety across every line, brand-independent.</div>
       </div>
-      <div class="step-card">
-        <span class="step-num">03</span>
-        <div class="step-icon">🛡</div>
-        <h3>Guided Risk Reduction</h3>
-        <p>Recommended mitigation strategies and safety zone configuration</p>
-      </div>
-      <div class="step-card">
-        <span class="step-num">04</span>
-        <div class="step-icon">✅</div>
-        <h3>Guided Deployment</h3>
-        <p>Force/pressure estimation, validated program, and Safety PLC specs</p>
+      <div style="border:1px solid rgba(30,16,20,0.12);border-radius:16px;padding:26px;">
+        <div style="font-size:19px;font-weight:700;">OEMs &amp; humanoid vendors</div>
+        <div style="margin-top:8px;font-family:'Courier New',monospace;font-size:11.5px;letter-spacing:0.06em;color:#7E6E73;">50+ ROBOTS · AUTOMOTIVE, AEROSPACE, HUMANOIDS</div>
+        <div style="margin-top:12px;font-size:15px;line-height:1.5;color:#6E5F63;">Embed validation into your own deployment process: API access, on-premise, audit support.</div>
       </div>
     </div>
+  </section>
 
-    <div class="outputs-row">
-      <div class="output-chip"><span class="chip-icon">📄</span> CE Documentation</div>
-      <div class="output-chip"><span class="chip-icon">⚙️</span> Safety PLC Specification</div>
-      <div class="output-chip"><span class="chip-icon">🤖</span> Validated Robot Program</div>
-      <div class="output-chip"><span class="chip-icon">📐</span> Force & Pressure Estimation</div>
-    </div>
-  </div>
-</section>
-
-<!-- ═══════ TRACTION ═══════ -->
-<section class="traction" id="traction">
-  <div class="container">
-    <div class="section-header">
-      <span class="badge">Traction</span>
-      <h2>Proven with industry leaders</h2>
-    </div>
-
-    <div class="traction-grid">
-      <div class="traction-card">
-        <h3>🚀 50+ Beta Testers</h3>
-        <ul>
-          <li>Top 4 Global Robotics Manufacturers</li>
-          <li>Top 5 Global Tier-1 Automotive Suppliers</li>
-          <li>Market Leader in Outdoor Power Equipment</li>
-          <li>Leading European Research Institutions</li>
-          <li>System Integrators across Europe</li>
-        </ul>
-      </div>
-      <div class="traction-card">
-        <h3>💬 Testimonial</h3>
-        <blockquote>"Using CARA (RoSA's early version) has reduced the engineering effort for risk assessment by more than 54%."</blockquote>
-        <div class="attribution">— Production Engineer, Top Tier-1 Automotive Supplier</div>
-      </div>
-      <div class="traction-card">
-        <h3>📝 LoIs & Early Adopters</h3>
-        <ul>
-          <li>Top 1 Global Robotics Manufacturer</li>
-          <li>Top 1 Global Tier-1 Automotive Supplier</li>
-          <li>Market Leader in Humanoid Parts</li>
-          <li>Humanoid Pioneer System Integrator in Germany</li>
-        </ul>
-      </div>
-      <div class="traction-card">
-        <h3>🔬 IP & Research Foundation</h3>
-        <ul>
-          <li>Patented technology (registered in US, CN, JP)</li>
-          <li>7+ ISO standards encoded in platform</li>
-          <li>CTO active in ISO TC 299 / WG8 and DIN</li>
-          <li>Published market study (203 experts, 20 interviews)</li>
-        </ul>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ═══════ MARKET ═══════ -->
-<section class="market" id="market">
-  <div class="container">
-    <div class="section-header">
-      <span class="badge">Market Opportunity</span>
-      <h2>From factory floor to humanoid frontier</h2>
-      <p>RoSA's SOM grows as robotics expands from stationary → mobile → humanoid.</p>
-    </div>
-
-    <div class="market-visual">
-      <div class="market-bubbles">
-        <div class="market-bubble bubble-sm">
-          <div class="bubble-value">€102M</div>
-          <div class="bubble-label">Stationary<br>EU+US+JP</div>
-        </div>
-        <div class="market-bubble bubble-md" style="margin-bottom: 20px;">
-          <div class="bubble-value">€1.5B</div>
-          <div class="bubble-label">Mobile<br>Robots</div>
-        </div>
-        <div class="market-bubble bubble-lg" style="margin-bottom: 50px;">
-          <div class="bubble-value">€6.6B</div>
-          <div class="bubble-label">Humanoids<br>Market</div>
+  <!-- EARLY ACCESS -->
+  <section id="early-access" style="max-width:1180px;margin:0 auto;padding:80px 5vw;">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:start;">
+      <div data-reveal>
+        <div style="font-family:'Courier New',monospace;font-size:13px;letter-spacing:0.18em;color:#C81E5A;">EARLY ACCESS</div>
+        <h2 style="margin:14px 0 0;font-size:clamp(32px,3.6vw,48px);font-weight:700;line-height:1.08;letter-spacing:-0.015em;">Put your next robot cell through RoSA</h2>
+        <p style="margin:18px 0 0;font-size:17px;line-height:1.55;color:#6E5F63;">We're onboarding a limited group of beta partners. Bring a real application. We'll validate it together.</p>
+        <div style="margin-top:26px;display:flex;flex-direction:column;gap:14px;">
+          <div style="display:flex;gap:12px;align-items:baseline;"><span style="color:#C81E5A;font-weight:700;">✓</span><span style="font-size:15.5px;color:#1C1418;"><strong>Free during beta</strong>: the full RoSA-Designer, hosted, no install</span></div>
+          <div style="display:flex;gap:12px;align-items:baseline;"><span style="color:#C81E5A;font-weight:700;">✓</span><span style="font-size:15.5px;color:#1C1418;"><strong>Direct line to the engineers</strong> who built the risk algorithms</span></div>
+          <div style="display:flex;gap:12px;align-items:baseline;"><span style="color:#C81E5A;font-weight:700;">✓</span><span style="font-size:15.5px;color:#1C1418;"><strong>Shape the roadmap</strong>: your use case drives what we build next</span></div>
+          <div style="display:flex;gap:12px;align-items:baseline;"><span style="color:#C81E5A;font-weight:700;">✓</span><span style="font-size:15.5px;color:#1C1418;"><strong>Founding-customer terms</strong> locked in when we launch commercially</span></div>
         </div>
       </div>
-      <div class="market-timeline">
-        <span>2026</span>
-        <span>2028</span>
-        <span>2030</span>
-        <span>>2035</span>
-      </div>
-      <div class="market-note">Near-term integrator SOM ≈ €100M+/yr (EU+US+JP) · RoSA as safety enabler for the humanoids market</div>
-    </div>
-  </div>
-</section>
-
-<!-- ═══════ COMPETITIVE ═══════ -->
-<section class="competitive">
-  <div class="container">
-    <div class="section-header">
-      <span class="badge badge-teal">Why RoSA Wins</span>
-      <h2>The only end-to-end platform</h2>
-    </div>
-    <div class="comp-table-wrap">
-      <table class="comp-table">
-        <thead>
-          <tr>
-            <th></th>
-            <th class="rosa-col">RoSA</th>
-            <th>Other tools</th>
-            <th>In-House / Consultant</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>Industrial Robots</td>
-            <td class="rosa-col"><span class="check">✓</span></td>
-            <td><span class="check">✓</span></td>
-            <td><span class="check">✓</span></td>
-          </tr>
-          <tr>
-            <td>Mobile Robots</td>
-            <td class="rosa-col"><span class="check">✓</span></td>
-            <td><span class="cross">✗</span></td>
-            <td><span class="check">✓</span></td>
-          </tr>
-          <tr>
-            <td>Humanoid Robots</td>
-            <td class="rosa-col"><span class="check">✓</span></td>
-            <td><span class="cross">✗</span></td>
-            <td>—</td>
-          </tr>
-          <tr>
-            <td>ISO Compliance Depth</td>
-            <td class="rosa-col"><span class="check">✓✓✓</span></td>
-            <td><span class="check">✓</span></td>
-            <td><span class="check">✓✓✓</span></td>
-          </tr>
-          <tr>
-            <td>Deployment Speed</td>
-            <td class="rosa-col" style="color: var(--teal); font-weight: 600;">⚡ Minutes</td>
-            <td>Days</td>
-            <td>Weeks–Months</td>
-          </tr>
-          <tr>
-            <td>3-Year Cost</td>
-            <td class="rosa-col" style="color: var(--teal);">€</td>
-            <td>—</td>
-            <td style="color: #ff6b7a;">€€€€</td>
-          </tr>
-          <tr>
-            <td>Vendor-Neutral</td>
-            <td class="rosa-col"><span class="check">✓</span></td>
-            <td><span class="check">✓</span></td>
-            <td><span class="check">✓</span></td>
-          </tr>
-          <tr>
-            <td>Ecosystem Integration</td>
-            <td class="rosa-col"><span class="check">✓</span></td>
-            <td><span class="cross">✗</span></td>
-            <td><span class="cross">✗</span></td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
-</section>
-
-<!-- ═══════ PRICING ═══════ -->
-<section class="pricing" id="pricing">
-  <div class="container">
-    <div class="section-header">
-      <span class="badge">Pricing</span>
-      <h2>Flexible plans for every stage</h2>
-      <p>From a free demo validation to full enterprise deployment — plans that scale with your safety needs.</p>
-    </div>
-    <div class="pricing-grid">
-      <div class="price-card">
-        <div class="tier-badge">Entry</div>
-        <div class="tier-name">Freemium</div>
-        <div class="price mono">€0</div>
-        <div class="price-note">1 Demo Validation</div>
-        <ul class="features">
-          <li>Value proof & risk-free trial</li>
-          <li>Standard report</li>
-          <li>Basic data protection</li>
-          <li>Community / email support</li>
-        </ul>
-        <a href="#" class="btn-glass" style="justify-content: center;">Start Free</a>
-      </div>
-      <div class="price-card">
-        <div class="tier-badge">Low Volume</div>
-        <div class="tier-name">Starter</div>
-        <div class="price mono" style="font-size: 1.4rem;">Pay-as-you-go</div>
-        <div class="price-note">per Validation</div>
-        <ul class="features">
-          <li>Up to 10 validations / year</li>
-          <li>1 re-run / revision inclusive</li>
-          <li>Template checks</li>
-          <li>Self-service portal</li>
-        </ul>
-        <a href="#cofounder" class="btn-glass" style="justify-content: center;">Contact Us</a>
-      </div>
-      <div class="price-card pop">
-        <div class="tier-badge">Most Popular</div>
-        <div class="tier-name">Professional</div>
-        <div class="price mono" style="font-size: 1.4rem;">Volume Pricing</div>
-        <div class="price-note">10+ validations / year</div>
-        <ul class="features">
-          <li>Priority support</li>
-          <li>Review call inclusive</li>
-          <li>Audit-ready report</li>
-          <li>Team workspace</li>
-        </ul>
-        <a href="#cofounder" class="btn-mag" style="justify-content: center; width: 100%;">Contact Us</a>
-      </div>
-      <div class="price-card">
-        <div class="tier-badge">High Volume</div>
-        <div class="tier-name">Enterprise</div>
-        <div class="price mono" style="font-size: 1.4rem;">Custom</div>
-        <div class="price-note">Unlimited + API access</div>
-        <ul class="features">
-          <li>Humanoids package</li>
-          <li>Onboarding + training</li>
-          <li>Custom validation criteria</li>
-          <li>Quarterly business review</li>
-        </ul>
-        <a href="#cofounder" class="btn-glass" style="justify-content: center;">Contact Us</a>
-      </div>
-    </div>
-  </div>
-</section>
-
-
-
-<!-- ═══════ SEE IT IN ACTION ═══════ -->
-<section class="team" id="demo">
-  <div class="container">
-    <div class="section-header">
-      <span class="badge badge-teal">See It In Action</span>
-      <h2>Watch the RoSA platform live</h2>
-      <p>See how RoSA automates safety validation end-to-end — from hazard identification to CE documentation — in our product webinar.</p>
-    </div>
-    <div class="video-embed">
-      <a href="https://www.youtube.com/watch?v=SdkW_FOqsVc" target="_blank" rel="noopener" class="video-card">
-        <div class="video-thumb">
-          <img src="https://img.youtube.com/vi/SdkW_FOqsVc/maxresdefault.jpg" alt="RoSA Platform Webinar" loading="lazy">
-          <div class="play-btn">▶</div>
-        </div>
-        <div class="video-info">
-          <h3>RoSA Platform Webinar — Full Product Walkthrough</h3>
-          <p>See the Safety Knowledge Graph, Risk Engine, and CE documentation generation in action. Covers stationary robots with a live demo of the complete 4-step workflow.</p>
-          <span class="watch-cta">Watch on YouTube →</span>
-        </div>
-      </a>
-    </div>
-  </div>
-</section>
-
-<!-- ═══════ CO-FOUNDER CTA ═══════ -->
-<section class="cofounder-cta" id="cofounder">
-  <div class="container">
-    <div class="cofounder-box">
-      <div class="cf-text">
-        <span class="badge">We're Hiring a Co-Founder</span>
-        <h2 style="margin-top: 1rem;">Commercial Co-Founder<br>& CEO-Track</h2>
-        <p>We seek a driven co-founder to lead fundraising, customer acquisition, and market strategy for the humanoid robotics safety opportunity.</p>
-        <div class="cf-roles">
-          <div class="cf-role">
-            <div class="cf-icon">💰</div>
-            <span><strong>Fundraise:</strong> Structure rounds and pitch investors</span>
-          </div>
-          <div class="cf-role">
-            <div class="cf-icon">🤝</div>
-            <span><strong>Validate:</strong> Convert beta users and close LOIs</span>
-          </div>
-          <div class="cf-role">
-            <div class="cf-icon">🎯</div>
-            <span><strong>Strategize:</strong> Shape long-term market entry</span>
-          </div>
-        </div>
-        <a href="#" class="btn-mag">Get in Touch →</a>
-      </div>
-      <div class="cf-details">
-        <div class="cf-detail-card">
-          <h4>What we're looking for</h4>
-          <ul>
-            <li>Deep-tech founding experience</li>
-            <li>Comfortable pitching VCs & grant bodies</li>
-            <li>Ambitious to co-own the vision of making humanoid robots safe and deployable at scale</li>
-          </ul>
+      <div data-reveal style="background:#fff;border-radius:16px;padding:32px;box-shadow:0 1px 3px rgba(30,16,20,0.04),0 12px 36px rgba(30,16,20,0.08);">
+        <div style="font-size:20px;font-weight:700;">Request early access</div>
+        <div style="margin-top:6px;font-size:14px;color:#7E6E73;">We reply within two working days.</div>
+        <div style="margin-top:22px;display:flex;flex-direction:column;gap:14px;">
+          <input id="f-name" placeholder="Your name" style="font-family:Arial,sans-serif;font-size:15px;padding:13px 16px;border:1px solid rgba(30,16,20,0.18);border-radius:10px;background:#FBF6F4;color:#1C1418;outline-color:#C81E5A;">
+          <input id="f-company" placeholder="Company" style="font-family:Arial,sans-serif;font-size:15px;padding:13px 16px;border:1px solid rgba(30,16,20,0.18);border-radius:10px;background:#FBF6F4;color:#1C1418;outline-color:#C81E5A;">
+          <input id="f-email" type="email" placeholder="Work email" style="font-family:Arial,sans-serif;font-size:15px;padding:13px 16px;border:1px solid rgba(30,16,20,0.18);border-radius:10px;background:#FBF6F4;color:#1C1418;outline-color:#C81E5A;">
+          <input id="f-use" placeholder="Your robot application (e.g. UR10 palletizing cell)" style="font-family:Arial,sans-serif;font-size:15px;padding:13px 16px;border:1px solid rgba(30,16,20,0.18);border-radius:10px;background:#FBF6F4;color:#1C1418;outline-color:#C81E5A;">
+          <button id="f-submit" style="font-family:'Courier New',monospace;font-size:13px;letter-spacing:0.08em;color:#fff;padding:15px 26px;border-radius:999px;background:#C81E5A;font-weight:700;border:none;cursor:pointer;">REQUEST EARLY ACCESS →</button>
+          <div style="font-size:12.5px;color:#7E6E73;text-align:center;">Opens your mail client with the request pre-filled.</div>
         </div>
       </div>
     </div>
-  </div>
-</section>
+  </section>
 
-
-
-<!-- ═══════ FOOTER ═══════ -->
-<footer>
-  <div class="container">
-    <div class="footer-brand"><span class="ro">Ro</span>SA – Robot Safety Assist © 2026</div>
-    <div class="footer-links">
-      <a href="#">LinkedIn</a>
-      <a href="https://www.youtube.com/watch?v=SdkW_FOqsVc">Webinar</a>
-      <a href="#">Contact</a>
+  <!-- FAQ -->
+  <section id="faq" style="max-width:820px;margin:0 auto;padding:8px 5vw 88px;">
+    <div data-reveal>
+      <div style="font-family:'Courier New',monospace;font-size:13px;letter-spacing:0.18em;color:#C81E5A;">FAQ</div>
+      <h2 style="margin:14px 0 22px;font-size:clamp(28px,3vw,40px);font-weight:700;letter-spacing:-0.015em;">Questions safety engineers ask us</h2>
     </div>
-  </div>
-</footer>
+    <div data-reveal style="display:flex;flex-direction:column;">
+      <details style="border-top:1px solid rgba(30,16,20,0.12);padding:20px 4px;">
+        <summary style="font-size:17px;font-weight:700;display:flex;justify-content:space-between;gap:16px;">Does RoSA replace our safety engineer or notified body? <span style="color:#C81E5A;">+</span></summary>
+        <p style="margin:14px 0 0;font-size:15.5px;line-height:1.6;color:#6E5F63;">No. RoSA automates the labour: hazard identification, risk assessment, force estimation, documentation. Your qualified person reviews and signs off instead of starting from a blank sheet. Notified bodies stay in the loop; they just get better inputs, faster.</p>
+      </details>
+      <details style="border-top:1px solid rgba(30,16,20,0.12);padding:20px 4px;">
+        <summary style="font-size:17px;font-weight:700;display:flex;justify-content:space-between;gap:16px;">Which robots are supported? <span style="color:#C81E5A;">+</span></summary>
+        <p style="margin:14px 0 0;font-size:15.5px;line-height:1.6;color:#6E5F63;">RoSA is vendor-neutral. The beta covers stationary industrial robots and cobots across brands. Mobile robots and humanoids follow via the Humanoid &amp; Mobile Plugin, in development for 2026.</p>
+      </details>
+      <details style="border-top:1px solid rgba(30,16,20,0.12);padding:20px 4px;">
+        <summary style="font-size:17px;font-weight:700;display:flex;justify-content:space-between;gap:16px;">Which standards does the documentation follow? <span style="color:#C81E5A;">+</span></summary>
+        <p style="margin:14px 0 0;font-size:15.5px;line-height:1.6;color:#6E5F63;">Risk assessment and reduction follow ISO 13849 and ISO 10218. The exported safety dossier is structured for CE conformity, with report formats for OSHA, UKCA, CSA and other regimes.</p>
+      </details>
+      <details style="border-top:1px solid rgba(30,16,20,0.12);border-bottom:1px solid rgba(30,16,20,0.12);padding:20px 4px;">
+        <summary style="font-size:17px;font-weight:700;display:flex;justify-content:space-between;gap:16px;">What does the beta involve? <span style="color:#C81E5A;">+</span></summary>
+        <p style="margin:14px 0 0;font-size:15.5px;line-height:1.6;color:#6E5F63;">You bring one real robot application. We onboard you on the hosted beta, you run the four steps on your cell, and our engineers review the results with you. It's free, and your feedback shapes the product.</p>
+      </details>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer style="border-top:1px solid rgba(30,16,20,0.12);padding:28px 5vw;display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;font-family:'Courier New',monospace;font-size:12px;letter-spacing:0.08em;color:#7E6E73;">
+    <div>ROSA<span style="color:#C81E5A;">.</span> · HUMANOIDS FOR HUMANITY</div>
+    <div><a href="#early-access" style="color:#C81E5A;text-decoration:none;">GET EARLY ACCESS ↑</a></div>
+    <div>© 2026</div>
+  </footer>
+</div>
 
 <script>
-const obs = new IntersectionObserver((entries) => {
-  entries.forEach(e => { if (e.isIntersecting) e.target.style.animationPlayState = 'running'; });
-}, { threshold: 0.1 });
-document.querySelectorAll('.anim').forEach(el => { el.style.animationPlayState = 'paused'; obs.observe(el); });
-document.querySelectorAll('a[href^="#"]').forEach(a => {
-  a.addEventListener('click', e => { e.preventDefault(); document.querySelector(a.getAttribute('href'))?.scrollIntoView({ behavior: 'smooth' }); });
-});
+(function () {
+  // ---------- reveal-on-scroll ----------
+  var revealEls = Array.prototype.slice.call(document.querySelectorAll('[data-reveal]'));
+  revealEls.forEach(function (el) {
+    el.style.opacity = '0';
+    el.style.transform = 'translateY(18px)';
+    el.style.transition = 'opacity .7s ease, transform .7s cubic-bezier(.2,.7,.2,1)';
+  });
+  var revealIO = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) {
+      if (e.isIntersecting) {
+        e.target.style.opacity = '1';
+        e.target.style.transform = 'none';
+        revealIO.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.12 });
+  revealEls.forEach(function (el) { revealIO.observe(el); });
+
+  // ---------- how-it-works video sync ----------
+  var segs = [
+    { ranges: [[18.6, 33]], rate: 1.4, tag: '01 · HAZARD IDENTIFICATION', cap: 'Every hazard, found automatically' },
+    { ranges: [[34, 52]], rate: 1.7, tag: '02 · RISK ASSESSMENT', cap: 'Every human reach, simulated' },
+    { ranges: [[73, 95]], rate: 1.7, tag: '03 · RISK REDUCTION', cap: 'Pick a safety concept — risks re-validated' },
+    { ranges: [[108, 133], [144, 153]], rate: 1.8, tag: '04 · DEPLOYMENT', cap: 'Safety PLC spec, then CE dossier — generated' }
+  ];
+  var video = document.getElementById('demo-video');
+  var captionBox = document.getElementById('caption-box');
+  var captionTag = document.getElementById('caption-tag');
+  var captionText = document.getElementById('caption-text');
+  var stepCards = Array.prototype.slice.call(document.querySelectorAll('.step-card'));
+  var segBars = Array.prototype.slice.call(document.querySelectorAll('.seg-bar'));
+
+  var state = { step: 0, rangeIdx: 0 };
+  var auto = true;
+  var videoVisible = true;
+  var lastStep = -1;
+
+  function renderStepStyles() {
+    stepCards.forEach(function (card) {
+      var i = parseInt(card.getAttribute('data-step'), 10);
+      var active = i === state.step;
+      card.style.border = active ? '1.5px solid rgba(200,30,90,0.55)' : '1px solid rgba(30,16,20,0.12)';
+      card.style.background = active ? 'rgba(200,30,90,0.05)' : '#fff';
+      card.style.boxShadow = active ? '0 8px 24px rgba(200,30,90,0.08)' : 'none';
+      var num = card.querySelector('.step-num');
+      if (num) num.style.color = active ? '#C81E5A' : '#7E6E73';
+    });
+    var seg = segs[state.step];
+    captionTag.textContent = seg.tag;
+    captionText.textContent = seg.cap;
+  }
+
+  function playSeg() {
+    if (!video || video.readyState < 1) return;
+    var s = segs[state.step];
+    state.rangeIdx = 0;
+    try { video.currentTime = s.ranges[0][0]; } catch (e) {}
+    video.playbackRate = s.rate;
+    captionBox.style.animation = 'none';
+    void captionBox.offsetWidth;
+    captionBox.style.animation = 'capIn .55s cubic-bezier(.2,.7,.2,1) both';
+    if (videoVisible) {
+      var p = video.play();
+      if (p && p.catch) p.catch(function () {});
+    }
+  }
+
+  function setStep(i, fromAuto) {
+    if (!fromAuto) auto = false;
+    if (i === state.step) { playSeg(); return; }
+    state.step = i;
+    renderStepStyles();
+  }
+
+  stepCards.forEach(function (card) {
+    card.addEventListener('click', function () {
+      setStep(parseInt(card.getAttribute('data-step'), 10), false);
+    });
+  });
+  segBars.forEach(function (bar) {
+    bar.addEventListener('click', function () {
+      setStep(parseInt(bar.getAttribute('data-step'), 10), false);
+    });
+  });
+
+  if (video) {
+    video.muted = true;
+    var start = function () { playSeg(); };
+    if (video.readyState >= 1) start(); else video.addEventListener('loadedmetadata', start);
+
+    var videoIO = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        videoVisible = e.isIntersecting;
+        if (e.isIntersecting) { playSeg(); } else { video.pause(); }
+      });
+    }, { threshold: 0.2 });
+    videoIO.observe(video);
+  }
+
+  function tick() {
+    if (!video) return;
+    if (lastStep !== state.step) {
+      lastStep = state.step;
+      playSeg();
+    }
+    var s = segs[state.step];
+    if (state.rangeIdx == null || state.rangeIdx >= s.ranges.length) state.rangeIdx = 0;
+    var range = s.ranges[state.rangeIdx];
+    if (!video.paused && video.currentTime >= range[1]) {
+      if (state.rangeIdx < s.ranges.length - 1) {
+        state.rangeIdx++;
+        try { video.currentTime = s.ranges[state.rangeIdx][0]; } catch (e) {}
+      } else if (auto) {
+        setStep((state.step + 1) % 4, true);
+      } else {
+        state.rangeIdx = 0;
+        try { video.currentTime = s.ranges[0][0]; } catch (e) {}
+      }
+    }
+    segs.forEach(function (sg, i) {
+      var fill = segBars[i].querySelector('.seg-fill');
+      if (!fill) return;
+      var w = 0;
+      if (i < state.step) {
+        w = 100;
+      } else if (i === state.step) {
+        var total = sg.ranges.reduce(function (a, r) { return a + (r[1] - r[0]); }, 0);
+        var done = 0;
+        for (var k = 0; k < state.rangeIdx; k++) done += sg.ranges[k][1] - sg.ranges[k][0];
+        var cur = sg.ranges[state.rangeIdx] || sg.ranges[0];
+        done += Math.max(0, Math.min(cur[1] - cur[0], video.currentTime - cur[0]));
+        w = Math.max(0, Math.min(1, done / total)) * 100;
+      }
+      fill.style.width = w + '%';
+    });
+    requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+  renderStepStyles();
+
+  // ---------- early access form ----------
+  var submitBtn = document.getElementById('f-submit');
+  if (submitBtn) {
+    submitBtn.addEventListener('click', function () {
+      var v = function (id) {
+        var el = document.getElementById(id);
+        return (el && el.value) || 'n/a';
+      };
+      var email = 'aulon.bajrami@ipa.fraunhofer.de';
+      var body = encodeURIComponent(
+        'Hi RoSA team,\n\nI would like early access to RoSA-Designer.\n\nName: ' + v('f-name') +
+        '\nCompany: ' + v('f-company') +
+        '\nEmail: ' + v('f-email') +
+        '\nRobot application: ' + v('f-use') + '\n'
+      );
+      window.location.href = 'mailto:' + email + '?subject=' + encodeURIComponent('RoSA early access request') + '&body=' + body;
+    });
+  }
+})();
 </script>
 </body>
 </html>
