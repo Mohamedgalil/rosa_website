@@ -17,6 +17,7 @@
   @keyframes logoScroll { from { transform: translateX(0); } to { transform: translateX(-50%); } }
   @keyframes capIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
   .logo-track:hover { animation-play-state: paused; }
+  .team-card:hover { border-color: rgba(200,30,90,0.35) !important; box-shadow: 0 10px 30px rgba(200,30,90,0.08); transform: translateY(-3px); }
 </style>
 </head>
 <body>
@@ -28,6 +29,7 @@
     <div style="display:flex;align-items:center;gap:22px;">
       <a href="#how" style="font-size:14px;color:#6E5F63;text-decoration:none;">How it works</a>
       <a href="#product" style="font-size:14px;color:#6E5F63;text-decoration:none;">Product</a>
+      <a href="#team" style="font-size:14px;color:#6E5F63;text-decoration:none;">Team</a>
       <a href="#faq" style="font-size:14px;color:#6E5F63;text-decoration:none;">FAQ</a>
       <a href="#early-access" style="font-family:'Courier New',monospace;font-size:12px;letter-spacing:0.08em;color:#fff;text-decoration:none;padding:10px 18px;border-radius:999px;background:#C81E5A;font-weight:700;">GET EARLY ACCESS</a>
     </div>
@@ -191,6 +193,35 @@
       <div style="font-family:'Courier New',monospace;font-size:12px;letter-spacing:0.18em;color:#FF7BAA;">FROM THE FIELD</div>
       <div style="margin-top:22px;font-size:clamp(24px,2.8vw,36px);font-weight:700;line-height:1.3;">"Using RoSA Designer reduced the engineering effort for risk assessment by more than 54%."</div>
       <div style="margin-top:20px;font-family:'Courier New',monospace;font-size:13px;letter-spacing:0.08em;color:#B9A9AF;">PRODUCTION ENGINEER · DENSO JAPAN</div>
+    </div>
+  </section>
+
+  <!-- TEAM / ABOUT -->
+  <section id="team" style="max-width:1180px;margin:0 auto;padding:72px 5vw;">
+    <div data-reveal>
+      <div style="font-family:'Courier New',monospace;font-size:13px;letter-spacing:0.18em;color:#C81E5A;">THE TEAM</div>
+      <h2 style="margin:14px 0 0;font-size:clamp(28px,3vw,40px);font-weight:700;line-height:1.1;letter-spacing:-0.015em;">Made in regulation, built for innovation</h2>
+      <p style="margin:16px 0 0;max-width:640px;font-size:16px;line-height:1.6;color:#6E5F63;">Robotics and safety engineers solving the certification bottleneck — so complex hardware reaches people faster, and safely.</p>
+    </div>
+    <div data-reveal style="margin-top:36px;display:grid;grid-template-columns:repeat(3,1fr);gap:22px;">
+      <a href="https://www.linkedin.com/in/el-shamouty/" class="team-card" target="_blank" rel="noopener" style="display:block;border:1px solid rgba(30,16,20,0.12);border-radius:16px;padding:26px;text-decoration:none;color:inherit;transition:box-shadow .25s ease,transform .25s ease,border-color .25s ease;">
+        <img src="media/mohamed.jpg" alt="Mohamed Elshamouty" style="display:block;width:104px;height:104px;border-radius:50%;object-fit:cover;border:1px solid rgba(30,16,20,0.10);">
+        <div style="margin-top:18px;font-size:19px;font-weight:700;">Dr.-Ing. Mohamed Elshamouty</div>
+        <div style="margin-top:6px;font-family:'Courier New',monospace;font-size:11.5px;letter-spacing:0.06em;color:#7E6E73;">TECHNICAL CO-FOUNDER</div>
+        <div style="margin-top:14px;display:inline-flex;align-items:center;gap:6px;font-family:'Courier New',monospace;font-size:12px;letter-spacing:0.06em;color:#C81E5A;font-weight:700;">LINKEDIN <span aria-hidden="true">↗</span></div>
+      </a>
+      <a href="https://www.linkedin.com/in/manuelrodrigues/" class="team-card" target="_blank" rel="noopener" style="display:block;border:1px solid rgba(30,16,20,0.12);border-radius:16px;padding:26px;text-decoration:none;color:inherit;transition:box-shadow .25s ease,transform .25s ease,border-color .25s ease;">
+        <img src="media/manuel.jpg" alt="Manuel Rodrigues" style="display:block;width:104px;height:104px;border-radius:50%;object-fit:cover;border:1px solid rgba(30,16,20,0.10);">
+        <div style="margin-top:18px;font-size:19px;font-weight:700;">Manuel Rodrigues</div>
+        <div style="margin-top:6px;font-family:'Courier New',monospace;font-size:11.5px;letter-spacing:0.06em;color:#7E6E73;">COMMERCIAL CO-FOUNDER</div>
+        <div style="margin-top:14px;display:inline-flex;align-items:center;gap:6px;font-family:'Courier New',monospace;font-size:12px;letter-spacing:0.06em;color:#C81E5A;font-weight:700;">LINKEDIN <span aria-hidden="true">↗</span></div>
+      </a>
+      <a href="https://www.linkedin.com/in/aulon-bajrami-a65775101/" class="team-card" target="_blank" rel="noopener" style="display:block;border:1px solid rgba(30,16,20,0.12);border-radius:16px;padding:26px;text-decoration:none;color:inherit;transition:box-shadow .25s ease,transform .25s ease,border-color .25s ease;">
+        <img src="media/aulon.jpg" alt="Aulon Bajrami" style="display:block;width:104px;height:104px;border-radius:50%;object-fit:cover;border:1px solid rgba(30,16,20,0.10);">
+        <div style="margin-top:18px;font-size:19px;font-weight:700;">Aulon Bajrami</div>
+        <div style="margin-top:6px;font-family:'Courier New',monospace;font-size:11.5px;letter-spacing:0.06em;color:#7E6E73;">TECHNICAL CO-FOUNDER</div>
+        <div style="margin-top:14px;display:inline-flex;align-items:center;gap:6px;font-family:'Courier New',monospace;font-size:12px;letter-spacing:0.06em;color:#C81E5A;font-weight:700;">LINKEDIN <span aria-hidden="true">↗</span></div>
+      </a>
     </div>
   </section>
 
