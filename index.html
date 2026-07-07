@@ -261,14 +261,18 @@
       <div data-reveal style="background:#fff;border-radius:16px;padding:32px;box-shadow:0 1px 3px rgba(30,16,20,0.04),0 12px 36px rgba(30,16,20,0.08);">
         <div style="font-size:20px;font-weight:700;">Request early access</div>
         <div style="margin-top:6px;font-size:14px;color:#7E6E73;">We reply within two working days.</div>
-        <div style="margin-top:22px;display:flex;flex-direction:column;gap:14px;">
-          <input id="f-name" placeholder="Your name" style="font-family:Arial,sans-serif;font-size:15px;padding:13px 16px;border:1px solid rgba(30,16,20,0.18);border-radius:10px;background:#FBF6F4;color:#1C1418;outline-color:#C81E5A;">
-          <input id="f-company" placeholder="Company" style="font-family:Arial,sans-serif;font-size:15px;padding:13px 16px;border:1px solid rgba(30,16,20,0.18);border-radius:10px;background:#FBF6F4;color:#1C1418;outline-color:#C81E5A;">
-          <input id="f-email" type="email" placeholder="Work email" style="font-family:Arial,sans-serif;font-size:15px;padding:13px 16px;border:1px solid rgba(30,16,20,0.18);border-radius:10px;background:#FBF6F4;color:#1C1418;outline-color:#C81E5A;">
-          <input id="f-use" placeholder="Your robot application (e.g. UR10 palletizing cell)" style="font-family:Arial,sans-serif;font-size:15px;padding:13px 16px;border:1px solid rgba(30,16,20,0.18);border-radius:10px;background:#FBF6F4;color:#1C1418;outline-color:#C81E5A;">
-          <button id="f-submit" style="font-family:'Courier New',monospace;font-size:13px;letter-spacing:0.08em;color:#fff;padding:15px 26px;border-radius:999px;background:#C81E5A;font-weight:700;border:none;cursor:pointer;">REQUEST EARLY ACCESS →</button>
-          <div style="font-size:12.5px;color:#7E6E73;text-align:center;">Opens your mail client with the request pre-filled.</div>
-        </div>
+        <form id="early-access-form" style="margin-top:22px;display:flex;flex-direction:column;gap:14px;">
+          <input type="hidden" name="access_key" value="715e5755-5b44-4ee3-a8f6-65f4719b182a">
+          <input type="hidden" name="subject" value="RoSA early access request">
+          <input type="hidden" name="from_name" value="RoSA website">
+          <input type="text" name="botcheck" style="display:none;" tabindex="-1" autocomplete="off">
+          <input id="f-name" name="name" required placeholder="Your name" style="font-family:Arial,sans-serif;font-size:15px;padding:13px 16px;border:1px solid rgba(30,16,20,0.18);border-radius:10px;background:#FBF6F4;color:#1C1418;outline-color:#C81E5A;">
+          <input id="f-company" name="company" placeholder="Company" style="font-family:Arial,sans-serif;font-size:15px;padding:13px 16px;border:1px solid rgba(30,16,20,0.18);border-radius:10px;background:#FBF6F4;color:#1C1418;outline-color:#C81E5A;">
+          <input id="f-email" name="email" type="email" required placeholder="Work email" style="font-family:Arial,sans-serif;font-size:15px;padding:13px 16px;border:1px solid rgba(30,16,20,0.18);border-radius:10px;background:#FBF6F4;color:#1C1418;outline-color:#C81E5A;">
+          <textarea id="f-use" name="message" placeholder="Your robot application (e.g. UR10 palletizing cell)" rows="3" style="font-family:Arial,sans-serif;font-size:15px;padding:13px 16px;border:1px solid rgba(30,16,20,0.18);border-radius:10px;background:#FBF6F4;color:#1C1418;outline-color:#C81E5A;resize:vertical;"></textarea>
+          <button id="f-submit" type="submit" style="font-family:'Courier New',monospace;font-size:13px;letter-spacing:0.08em;color:#fff;padding:15px 26px;border-radius:999px;background:#C81E5A;font-weight:700;border:none;cursor:pointer;">REQUEST EARLY ACCESS →</button>
+          <div id="f-status" style="font-size:12.5px;color:#7E6E73;text-align:center;">We'll reply directly to your email.</div>
+        </form>
       </div>
     </div>
   </section>
@@ -450,21 +454,39 @@
   renderStepStyles();
 
   // ---------- early access form ----------
-  var submitBtn = document.getElementById('f-submit');
-  if (submitBtn) {
-    submitBtn.addEventListener('click', function () {
-      var v = function (id) {
-        var el = document.getElementById(id);
-        return (el && el.value) || 'n/a';
-      };
-      var email = 'aulon.bajrami@ipa.fraunhofer.de';
-      var body = encodeURIComponent(
-        'Hi RoSA team,\n\nI would like early access to RoSA-Designer.\n\nName: ' + v('f-name') +
-        '\nCompany: ' + v('f-company') +
-        '\nEmail: ' + v('f-email') +
-        '\nRobot application: ' + v('f-use') + '\n'
-      );
-      window.location.href = 'mailto:' + email + '?subject=' + encodeURIComponent('RoSA early access request') + '&body=' + body;
+  var form = document.getElementById('early-access-form');
+  var statusEl = document.getElementById('f-status');
+  if (form) {
+    form.addEventListener('submit', function (evt) {
+      evt.preventDefault();
+      var btn = document.getElementById('f-submit');
+      btn.disabled = true;
+      btn.textContent = 'SENDING…';
+      statusEl.style.color = '#7E6E73';
+      statusEl.textContent = "We'll reply directly to your email.";
+
+      fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify(Object.fromEntries(new FormData(form)))
+      })
+        .then(function (res) { return res.json(); })
+        .then(function (data) {
+          if (data.success) {
+            form.reset();
+            btn.textContent = 'REQUEST SENT ✓';
+            statusEl.style.color = '#C81E5A';
+            statusEl.textContent = "Thanks — we'll be in touch within two working days.";
+          } else {
+            throw new Error(data.message || 'Submission failed');
+          }
+        })
+        .catch(function () {
+          btn.disabled = false;
+          btn.textContent = 'REQUEST EARLY ACCESS →';
+          statusEl.style.color = '#C81E5A';
+          statusEl.textContent = 'Something went wrong — please email aulon.bajrami@ipa.fraunhofer.de directly.';
+        });
     });
   }
 })();
